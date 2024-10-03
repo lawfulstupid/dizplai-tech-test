@@ -29,7 +29,7 @@ public class Poll {
     private List<Response> responses = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
-    private PollStatus status = PollStatus.ACTIVE;
+    private PollStatus status = PollStatus.PENDING;
 
     @JsonIgnore
     private OffsetDateTime createdAt = OffsetDateTime.now();
