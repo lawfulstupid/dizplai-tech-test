@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,13 +30,14 @@ public class PollController {
     private final ResponseRepository responseRepo;
 
     // Returns active poll
-    @GetMapping("")
+    @GetMapping
     public @ResponseBody Poll getActivePoll() {
         return pollRepo.findFirstByStatus(PollStatus.ACTIVE).orElse(null);
     }
 
     // Creates a new poll
-    @PostMapping("/create")
+    @Secured("ADMIN")
+    @PostMapping
     public @ResponseBody Poll createPoll(@RequestBody CreatePollRequestBody body) {
         // Validation
         if (body.name() == null || body.name().isEmpty()) {
@@ -68,6 +72,7 @@ public class PollController {
 
 
     // Marks the given poll as active
+    @Secured("ADMIN")
     @PutMapping("/activate/{id}")
     public @ResponseBody Poll setActivePoll(@PathVariable Integer id) {
         final Poll newActivePoll = pollRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Poll not found"));
@@ -88,6 +93,7 @@ public class PollController {
     }
 
     // Activates a new arbitrary poll
+    @Secured("ADMIN")
     @PostMapping("/activate/next")
     public @ResponseBody Poll activateNextPoll() {
         // Find a poll that hasn't been activated yet
@@ -99,6 +105,7 @@ public class PollController {
     }
 
     // Gets a poll
+    @Secured("ADMIN")
     @GetMapping("/{id}")
     public @ResponseBody Poll getPoll(@PathVariable Integer id) {
         return pollRepo.findById(id).orElse(null);
