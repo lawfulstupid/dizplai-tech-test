@@ -104,8 +104,9 @@ public class PollController {
         return pollRepo.findById(id).orElse(null);
     }
 
+    // Handles user response to a poll
     @PostMapping("/{pollId}/respond/{optionId}")
-    public ResponseEntity<Void> respondToPoll(@PathVariable Integer pollId, @PathVariable Integer optionId, @CookieValue(LoginController.USER_ID_COOKIE) String userId) {
+    public ResponseEntity<Void> respondToPoll(@PathVariable Integer pollId, @PathVariable Integer optionId, @CookieValue(CookieController.USER_ID_COOKIE) String userId) {
         // Find required objects
         final Poll poll = pollRepo.findById(pollId).orElseThrow(() -> new IllegalArgumentException("Poll not found"));
         final PollOption option = poll.getPollOptions().stream().filter(opt -> opt.getId() == optionId).findFirst().orElseThrow(() -> new IllegalArgumentException("Option not found"));
@@ -123,7 +124,7 @@ public class PollController {
 
     // Returns aggregated results for a poll
     @GetMapping("/{id}/results")
-    public @ResponseBody PollResult getPollResults(@PathVariable Integer id, @CookieValue(LoginController.USER_ID_COOKIE) String userId) {
+    public @ResponseBody PollResult getPollResults(@PathVariable Integer id, @CookieValue(CookieController.USER_ID_COOKIE) String userId) {
         final Poll poll = pollRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Poll not found"));
 
         final int totalVotes = poll.getResponses().size();
