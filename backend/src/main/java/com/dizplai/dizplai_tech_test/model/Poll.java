@@ -1,6 +1,7 @@
 package com.dizplai.dizplai_tech_test.model;
 
 import com.dizplai.dizplai_tech_test.model.enums.PollStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -23,12 +24,14 @@ public class Poll {
     @OneToMany(mappedBy = "poll", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PollOption> pollOptions = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "poll", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Response> responses = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private PollStatus status = PollStatus.ACTIVE;
 
+    @JsonIgnore
     private OffsetDateTime createdAt = OffsetDateTime.now();
 
 }

@@ -1,5 +1,6 @@
 package com.dizplai.dizplai_tech_test.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -14,11 +15,13 @@ public class PollOption {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private int id;
 
+    @JsonIgnore
     @ManyToOne(optional = false)
     private Poll poll;
 
     private String description;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "pollOption", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Response> responses = new ArrayList<>();
 
