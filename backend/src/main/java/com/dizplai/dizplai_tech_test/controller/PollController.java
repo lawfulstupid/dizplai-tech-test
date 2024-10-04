@@ -14,6 +14,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
@@ -68,6 +69,23 @@ public class PollController {
             List<String> options
     ) {}
 
+    // Get sample create poll request body
+    @Secured("ADMIN")
+    @GetMapping("/sample")
+    public @ResponseBody CreatePollRequestBody getSamplePoll() {
+        return new CreatePollRequestBody(
+                "A Riddle",
+                "What have I got in my pocket?",
+                Arrays.asList("Handses", "Knife", "String, or nothing")
+        );
+    }
+
+    // Creates a sample poll
+    @Secured("ADMIN")
+    @PostMapping("/sample")
+    public @ResponseBody Poll createSamplePoll() {
+        return createPoll(getSamplePoll());
+    }
 
     // Marks the given poll as active
     @Secured("ADMIN")
