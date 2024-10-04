@@ -1,0 +1,20 @@
+name: dizplai-tech-test
+services:
+  db:
+    image: mysql
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: dizplai
+  app:
+    depends_on:
+      - db
+    build: backend
+    container_name: dizplai-app
+    environment:
+      RDS_URL: jdbc:mysql://db:3306/dizplai
+      RDS_USERNAME: root
+      RDS_PASSWORD: root
+    ports:
+      - "8080:8080"
+    restart: on-failure
