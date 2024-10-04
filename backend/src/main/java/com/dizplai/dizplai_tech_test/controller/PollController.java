@@ -31,7 +31,8 @@ public class PollController {
     // Returns active poll
     @GetMapping
     public @ResponseBody Poll getActivePoll() {
-        return pollRepo.findFirstByStatus(PollStatus.ACTIVE).orElse(null);
+        return pollRepo.findFirstByStatus(PollStatus.ACTIVE)
+                .orElseThrow(() -> new IllegalStateException("No active polls"));
     }
 
     // Creates a new poll
@@ -117,14 +118,14 @@ public class PollController {
                 // Activate it
                 .map(nextPoll -> setActivePoll(nextPoll.getId()))
                 // If none found, don't close existing poll
-                .orElse(null);
+                .orElseThrow(() -> new IllegalStateException("No pending polls"));
     }
 
     // Gets a poll
     @Secured("ADMIN")
     @GetMapping("/{id}")
     public @ResponseBody Poll getPoll(@PathVariable Integer id) {
-        return pollRepo.findById(id).orElse(null);
+        return pollRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Poll not found"));
     }
 
     // Handles user response to a poll

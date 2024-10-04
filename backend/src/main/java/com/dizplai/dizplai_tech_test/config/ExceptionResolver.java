@@ -16,4 +16,8 @@ public class ExceptionResolver {
     @ExceptionHandler(value = IllegalCallerException.class)
     public void handleIllegalCaller() {}
 
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    @ExceptionHandler(value = IllegalStateException.class)
+    public void handleIllegalState() {}
+
 }
