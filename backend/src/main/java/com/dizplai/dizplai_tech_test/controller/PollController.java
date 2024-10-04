@@ -153,11 +153,12 @@ public class PollController {
         final Poll poll = pollRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Poll not found"));
 
         final int totalVotes = poll.getResponses().size();
+        if (totalVotes == 0) throw new IllegalStateException("Poll has no responses");
 
         // Convert Poll to PollResult
         AtomicBoolean foundUserVote = new AtomicBoolean(false);
         List<PollOptionResult> optionResults = poll.getOptions().stream().map(option -> {
-            double votePercentage = (double) option.getResponses().size() / totalVotes;
+            double votePercentage = 100d * option.getResponses().size() / totalVotes;
             boolean userSelection = false;
             if (!foundUserVote.get()) {
                 userSelection = !foundUserVote.get() && option.getResponses().stream().map(Response::getUser).anyMatch(userId::equals);
