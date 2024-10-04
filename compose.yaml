@@ -9,7 +9,7 @@ services:
   app:
     depends_on:
       - db
-    build: backend
+    build: .
     container_name: dizplai-app
     environment:
       RDS_URL: jdbc:mysql://db:3306/dizplai
