@@ -1,13 +1,19 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import {Component} from '@angular/core';
+import {PollApiService} from "./services/poll-api.service";
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'dizplai-tech-test';
+
+  data: string = '';
+
+  constructor(private pollApi: PollApiService) {
+    this.pollApi.getActivePoll().subscribe(data => {
+      this.data = data;
+    });
+  }
+
 }
