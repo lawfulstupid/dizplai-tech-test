@@ -22,7 +22,7 @@ public class Poll {
     private String question;
 
     @OneToMany(mappedBy = "poll", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PollOption> pollOptions = new ArrayList<>();
+    private List<PollOption> options = new ArrayList<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "poll", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)

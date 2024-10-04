@@ -11,8 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,7 +56,7 @@ public class PollController {
             final PollOption pollOption = new PollOption();
             pollOption.setDescription(optionText);
             pollOption.setPoll(poll);
-            poll.getPollOptions().add(pollOption);
+            poll.getOptions().add(pollOption);
         });
 
         return pollRepo.save(poll);
@@ -116,7 +114,7 @@ public class PollController {
     public ResponseEntity<Void> respondToPoll(@PathVariable Integer pollId, @PathVariable Integer optionId, @CookieValue(CookieController.USER_ID_COOKIE) String userId) {
         // Find required objects
         final Poll poll = pollRepo.findById(pollId).orElseThrow(() -> new IllegalArgumentException("Poll not found"));
-        final PollOption option = poll.getPollOptions().stream().filter(opt -> opt.getId() == optionId).findFirst().orElseThrow(() -> new IllegalArgumentException("Option not found"));
+        final PollOption option = poll.getOptions().stream().filter(opt -> opt.getId() == optionId).findFirst().orElseThrow(() -> new IllegalArgumentException("Option not found"));
 
         // Construct Response object
         Response response = new Response();
@@ -138,7 +136,7 @@ public class PollController {
 
         // Convert Poll to PollResult
         AtomicBoolean foundUserVote = new AtomicBoolean(false);
-        List<PollOptionResult> optionResults = poll.getPollOptions().stream().map(option -> {
+        List<PollOptionResult> optionResults = poll.getOptions().stream().map(option -> {
             double votePercentage = (double) option.getResponses().size() / totalVotes;
             boolean userSelection = false;
             if (!foundUserVote.get()) {
