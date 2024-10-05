@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface PollRepository extends CrudRepository<Poll, Integer> {
 
-    Optional<Poll> findFirstByStatus(PollStatus status);
+    Optional<Integer> findFirstByStatus(PollStatus status);
     List<Poll> findAllByStatus(PollStatus status);
 
 }

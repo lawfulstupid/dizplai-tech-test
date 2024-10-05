@@ -8,16 +8,12 @@ import com.dizplai.dizplai_tech_test.model.Response;
 import com.dizplai.dizplai_tech_test.model.enums.PollStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -30,8 +26,9 @@ public class PollController {
 
     // Returns active poll
     @GetMapping
-    public @ResponseBody Poll getActivePoll() {
+    public @ResponseBody Poll getActivePoll(@CookieValue(name = CookieController.USER_ID_COOKIE, required = false) String userId) {
         return pollRepo.findFirstByStatus(PollStatus.ACTIVE)
+                .map(id -> getPollById(id, userId))
                 .orElseThrow(() -> new IllegalStateException("No active polls"));
     }
 
@@ -117,7 +114,7 @@ public class PollController {
         // Find a poll that hasn't been activated yet
         return pollRepo.findFirstByStatus(PollStatus.PENDING)
                 // Activate it
-                .map(nextPoll -> setActivePoll(nextPoll.getId()))
+                .map(this::setActivePoll)
                 // If none found, don't close existing poll
                 .orElseThrow(() -> new IllegalStateException("No pending polls"));
     }
@@ -125,13 +122,18 @@ public class PollController {
     // Gets a poll
     @Secured("ADMIN")
     @GetMapping("/{id}")
-    public @ResponseBody Poll getPoll(@PathVariable Integer id) {
-        return pollRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Poll not found"));
+    public @ResponseBody Poll getPollById(@PathVariable Integer id, @CookieValue(name = CookieController.USER_ID_COOKIE, required = false) String userId) {
+        return pollRepo.findById(id)
+          .map(poll -> {
+            poll.setCurrentUser(userId);
+            return poll;
+          })
+          .orElseThrow(() -> new IllegalArgumentException("Poll not found"));
     }
 
     // Handles user response to a poll
     @PostMapping("/{pollId}/respond/{optionId}")
-    public ResponseEntity<Void> respondToPoll(@PathVariable Integer pollId, @PathVariable Integer optionId, @CookieValue(CookieController.USER_ID_COOKIE) String userId) {
+    public @ResponseBody Poll respondToPoll(@PathVariable Integer pollId, @PathVariable Integer optionId, @CookieValue(CookieController.USER_ID_COOKIE) String userId) {
         // Find required objects
         final Poll poll = pollRepo.findById(pollId).orElseThrow(() -> new IllegalArgumentException("Poll not found"));
         final PollOption option = poll.getOptions().stream().filter(opt -> opt.getId() == optionId).findFirst().orElseThrow(() -> new IllegalArgumentException("Option not found"));
@@ -144,60 +146,9 @@ public class PollController {
 
         // Save
         responseRepo.save(response);
-        return new ResponseEntity<>(HttpStatus.OK);
+
+        // Respond with updated poll
+        return getPollById(pollId, userId);
     }
-
-    // Returns aggregated results for a poll
-    @GetMapping("/{id}/results")
-    public @ResponseBody PollResult getPollResults(@PathVariable Integer id, @CookieValue(CookieController.USER_ID_COOKIE) String userId) {
-        final Poll poll = pollRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Poll not found"));
-
-        final int totalVotes = poll.getResponses().size();
-        if (totalVotes == 0) throw new IllegalStateException("Poll has no responses");
-
-        // Convert Poll to PollResult
-        AtomicBoolean foundUserVote = new AtomicBoolean(false);
-        List<PollOptionResult> optionResults = poll.getOptions().stream().map(option -> {
-            double votePercentage = 100d * option.getResponses().size() / totalVotes;
-            boolean userSelection = false;
-            if (!foundUserVote.get()) {
-                userSelection = !foundUserVote.get() && option.getResponses().stream().map(Response::getUser).anyMatch(userId::equals);
-                foundUserVote.set(userSelection);
-            }
-
-            // Convert PollOption to PollOptionResult
-            return new PollOptionResult(
-                    option.getDescription(),
-                    option.getResponses().size(),
-                    votePercentage,
-                    userSelection
-            );
-        }).collect(Collectors.toList());
-
-        if (!foundUserVote.get()) {
-            throw new IllegalCallerException("You must cast a vote to view the results");
-        }
-
-        return new PollResult(
-                poll.getName(),
-                poll.getQuestion(),
-                totalVotes,
-                optionResults
-        );
-    }
-
-    public record PollResult(
-            String name,
-            String question,
-            int responses,
-            List<PollOptionResult> options
-    ) {}
-
-    public record PollOptionResult(
-            String description,
-            int votes,
-            double votesPercentage,
-            boolean userSelection
-    ) {}
 
 }
