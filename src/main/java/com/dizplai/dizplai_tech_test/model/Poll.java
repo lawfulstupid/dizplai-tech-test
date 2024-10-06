@@ -46,7 +46,6 @@ public class Poll {
     }
 
     // Used for deciding whether to serialise results
-    @JsonIgnore
     private transient boolean userComplete = false;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)

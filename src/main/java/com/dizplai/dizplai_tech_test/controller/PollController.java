@@ -24,12 +24,28 @@ public class PollController {
     private final PollRepository pollRepo;
     private final ResponseRepository responseRepo;
 
+    // Gets a poll
+    @Secured("ADMIN")
+    @GetMapping("/{id}")
+    public @ResponseBody Poll getPollById(@PathVariable Integer id, @CookieValue(name = CookieController.USER_ID_COOKIE, required = false) String userId) {
+        return pollRepo.findById(id)
+                .map(poll -> returnPoll(poll, userId))
+                .orElseThrow(() -> new IllegalArgumentException("Poll not found"));
+    }
+
     // Returns active poll
     @GetMapping
     public @ResponseBody Poll getActivePoll(@CookieValue(name = CookieController.USER_ID_COOKIE, required = false) String userId) {
         return pollRepo.findFirstByStatus(PollStatus.ACTIVE)
-                .map(id -> getPollById(id, userId))
+                .map(poll -> returnPoll(poll, userId))
                 .orElseThrow(() -> new IllegalStateException("No active polls"));
+    }
+
+    private Poll returnPoll(Poll poll, String userId) {
+        if (userId != null) {
+            poll.setCurrentUser(userId);
+        }
+        return poll;
     }
 
     // Creates a new poll
@@ -90,21 +106,12 @@ public class PollController {
     @Secured("ADMIN")
     @PutMapping("/activate/{id}")
     public @ResponseBody Poll setActivePoll(@PathVariable Integer id) {
-        final Poll newActivePoll = pollRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Poll not found"));
-
-        // Close any active polls
-        List<Poll> activePolls = pollRepo.findAllByStatus(PollStatus.ACTIVE);
-        activePolls.forEach(poll -> {
-            if (poll.getId() == newActivePoll.getId()) {
-                return; // no action required
-            }
-            poll.setStatus(PollStatus.CLOSED);
-        });
-        pollRepo.saveAll(activePolls);
-
-        // Update new active poll
-        newActivePoll.setStatus(PollStatus.ACTIVE);
-        return pollRepo.save(newActivePoll);
+        // Find the requested poll
+        return pollRepo.findById(id)
+                // Activate it
+                .map(this::setActivePoll)
+                // If not found, return error
+                .orElseThrow(() -> new IllegalArgumentException("Poll not found"));
     }
 
     // Activates a new arbitrary poll
@@ -115,20 +122,24 @@ public class PollController {
         return pollRepo.findFirstByStatus(PollStatus.PENDING)
                 // Activate it
                 .map(this::setActivePoll)
-                // If none found, don't close existing poll
+                // If none found, return error
                 .orElseThrow(() -> new IllegalStateException("No pending polls"));
     }
 
-    // Gets a poll
-    @Secured("ADMIN")
-    @GetMapping("/{id}")
-    public @ResponseBody Poll getPollById(@PathVariable Integer id, @CookieValue(name = CookieController.USER_ID_COOKIE, required = false) String userId) {
-        return pollRepo.findById(id)
-          .map(poll -> {
-            poll.setCurrentUser(userId);
-            return poll;
-          })
-          .orElseThrow(() -> new IllegalArgumentException("Poll not found"));
+    private Poll setActivePoll(Poll nextActivePoll) {
+        // No action required if poll is already active
+        if (nextActivePoll.getStatus() == PollStatus.ACTIVE) return nextActivePoll;
+
+        // Close any active polls
+        List<Poll> activePolls = pollRepo.findAllByStatus(PollStatus.ACTIVE);
+        activePolls.forEach(poll -> {
+            poll.setStatus(PollStatus.CLOSED);
+        });
+        pollRepo.saveAll(activePolls);
+
+        // Update new active poll
+        nextActivePoll.setStatus(PollStatus.ACTIVE);
+        return pollRepo.save(nextActivePoll);
     }
 
     // Handles user response to a poll

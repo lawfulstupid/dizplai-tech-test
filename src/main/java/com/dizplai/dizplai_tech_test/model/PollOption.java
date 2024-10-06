@@ -35,9 +35,7 @@ public class PollOption {
         userSelection = responses.stream().anyMatch(response -> response.getUser().equals(userId));
     }
 
-    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-    @JsonProperty("userSelection")
-    private transient boolean userSelection;
+    private transient boolean userSelection = false;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("votes")
