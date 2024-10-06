@@ -132,9 +132,7 @@ public class PollController {
 
         // Close any active polls
         List<Poll> activePolls = pollRepo.findAllByStatus(PollStatus.ACTIVE);
-        activePolls.forEach(poll -> {
-            poll.setStatus(PollStatus.CLOSED);
-        });
+        activePolls.forEach(poll -> poll.setStatus(PollStatus.CLOSED));
         pollRepo.saveAll(activePolls);
 
         // Update new active poll
