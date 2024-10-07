@@ -163,4 +163,14 @@ public class PollController {
         return getPollById(pollId, userId);
     }
 
+    @Secured("ADMIN")
+    @GetMapping("/{pollId}/responses")
+    public @ResponseBody List<Response> getResponses(@PathVariable Integer pollId, @RequestParam(name = "option", required = false) Integer optionId) {
+        Poll poll = pollRepo.findById(pollId).orElseThrow(() -> new IllegalArgumentException("Poll not found"));
+        if (optionId != null && poll.getOptions().stream().noneMatch(option -> option.getId() == optionId)) {
+            throw new IllegalArgumentException("Option not found");
+        }
+        return responseRepo.getResponsesForPoll(pollId, optionId);
+    }
+
 }

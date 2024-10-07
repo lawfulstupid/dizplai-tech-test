@@ -109,6 +109,22 @@ Expected Responses:
 * `404 NOT FOUND`: No pending polls found
 
 
+### View Poll Responses
+
+Returns detailed information about responses to a poll, including timestamp of when the response was made and the anonymous `user-id`.
+
+URL: `GET /poll/{pollId}/responses`
+
+| Query Parameter | Type    | Default | Description         |
+|-----------------|---------|---------|---------------------|
+| option          | Integer | null    | Filter by option ID |
+
+Expected Responses:
+* `200 OK`: returns list of `response` objects
+* `400 BAD REQUEST`: Poll not found
+* `400 BAD REQUEST`: Option not found (this also occurs if given option does not belong to given poll)
+
+
 ## Application API
 
 These endpoints are used by the application/user to query and respond to polls.
