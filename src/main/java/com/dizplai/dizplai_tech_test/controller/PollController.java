@@ -51,9 +51,7 @@ public class PollController {
     @PostMapping
     public @ResponseBody Poll createPoll(@RequestBody CreatePollRequestBody body, @RequestParam(name = "activate", required = false, defaultValue = "false") boolean activate) {
         // Validation
-        if (body.name() == null || body.name().isEmpty()) {
-            throw new IllegalArgumentException("Poll name cannot be empty");
-        } else if (body.question() == null || body.question().isEmpty()) {
+        if (body.question() == null || body.question().isEmpty()) {
             throw new IllegalArgumentException("Poll question cannot be empty");
         } else if (body.options() == null || body.options().size() < 2) {
             throw new IllegalArgumentException("Require at least 2 poll options");
@@ -63,7 +61,6 @@ public class PollController {
 
         // Convert request body to model
         final Poll poll = new Poll();
-        poll.setName(body.name());
         poll.setQuestion(body.question());
         body.options().forEach(optionText -> {
             final PollOption pollOption = new PollOption();
@@ -77,7 +74,6 @@ public class PollController {
     }
 
     public record CreatePollRequestBody(
-            String name,
             String question,
             List<String> options
     ) {}
@@ -87,7 +83,6 @@ public class PollController {
     @GetMapping("/sample")
     public @ResponseBody CreatePollRequestBody getSamplePoll() {
         return new CreatePollRequestBody(
-                "A Riddle",
                 "What have I got in my pocket?",
                 Arrays.asList("Handses", "Knife", "String, or nothing")
         );

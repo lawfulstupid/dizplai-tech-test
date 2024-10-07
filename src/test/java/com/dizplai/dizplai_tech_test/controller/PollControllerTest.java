@@ -69,7 +69,6 @@ public class PollControllerTest {
     @Test
     public void createPollTest_unauthorized() throws Exception {
         String requestBody = "{" +
-                "\"name\": \"A Riddle\"," +
                 "\"question\": \"What have I got in my pocket?\"," +
                 "\"options\":[\"Handses\", \"Knife\", \"String, or nothing\"]" +
                 "}";
@@ -92,7 +91,6 @@ public class PollControllerTest {
         });
 
         String requestBody = "{" +
-                "\"name\": \"A Riddle\"," +
                 "\"question\": \"What have I got in my pocket?\"," +
                 "\"options\":[\"Handses\", \"Knife\", \"String, or nothing\"]" +
                 "}";
@@ -106,7 +104,6 @@ public class PollControllerTest {
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     public void createPollTest_noOptions() throws Exception {
         String requestBody = "{" +
-                "\"name\": \"A Riddle\"," +
                 "\"question\": \"What have I got in my pocket?\"," +
                 "\"options\":[]" +
                 "}";
@@ -118,7 +115,6 @@ public class PollControllerTest {
     private Poll samplePoll() {
         Poll poll = new Poll();
         poll.setId(1);
-        poll.setName("A Riddle");
         poll.setQuestion("What have I got in my pocket?");
 
         PollOption option1 = new PollOption();
@@ -145,7 +141,6 @@ public class PollControllerTest {
     private String samplePollOutput(PollStatus pollStatus) {
         return "{" +
                 "\"id\":1," +
-                "\"name\":\"A Riddle\"," +
                 "\"question\":\"What have I got in my pocket?\"," +
                 "\"options\":[{" +
                     "\"id\":1," +

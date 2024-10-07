@@ -21,8 +21,6 @@ public class Poll {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int id;
 
-    private String name;
-
     private String question;
 
     @OneToMany(mappedBy = "poll", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
