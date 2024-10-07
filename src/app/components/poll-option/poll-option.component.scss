@@ -22,12 +22,25 @@
   }
 }
 
-.votes-bar {
+.votes-bar-container {
   position: absolute;
   left: 0;
   top: 0;
   height: 100%;
-  background: darkmagenta;
+  .votes-bar {
+    height: 100%;
+    background: darkmagenta;
+    animation: bar-expand 1s ease-in-out;
+  }
+}
+
+@keyframes bar-expand {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
+  }
 }
 
 .votes-display {
