@@ -156,6 +156,10 @@ public class PollController {
         response.setPollOption(option);
         response.setUser(userId);
 
+        // Populate dependencies
+        poll.getResponses().add(response);
+        option.getResponses().add(response);
+
         // Save
         responseRepo.save(response);
 
