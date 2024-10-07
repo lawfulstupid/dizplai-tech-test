@@ -14,7 +14,7 @@ RUN n 18                # installs node 18 and reinstalls correct npm version
 
 # Build frontend
 RUN npm install -g @angular/cli
-RUN npm install --production
+RUN npm install
 RUN ng build
 
 # Build backend (with bundled frontend)
