@@ -30,7 +30,6 @@ public class Poll {
     @OneToMany(mappedBy = "poll", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Response> responses = new ArrayList<>();
 
-    @JsonIgnore
     @Enumerated(EnumType.STRING)
     private PollStatus status = PollStatus.PENDING;
 

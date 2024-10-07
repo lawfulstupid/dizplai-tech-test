@@ -51,7 +51,7 @@ public class PollControllerTest {
 
         mvc.perform(get("/poll"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(samplePollOutput()));
+                .andExpect(content().string(samplePollOutput(PollStatus.ACTIVE)));
     }
 
     @Test
@@ -92,7 +92,7 @@ public class PollControllerTest {
 
         mvc.perform(post("/poll").content(requestBody).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().string(samplePollOutput()));
+                .andExpect(content().string(samplePollOutput(PollStatus.PENDING)));
     }
 
     @Test
@@ -133,7 +133,7 @@ public class PollControllerTest {
         return poll;
     }
 
-    private String samplePollOutput() {
+    private String samplePollOutput(PollStatus status) {
         return "{" +
                 "\"id\":1," +
                 "\"question\":\"What have I got in my pocket?\"," +
@@ -150,6 +150,7 @@ public class PollControllerTest {
                     "\"description\":\"String, or nothing\"," +
                     "\"userSelection\":false" +
                 "}]," +
+                "\"status\":\"" + status.name() + "\"," +
                 "\"userComplete\":false" +
         "}";
     }
