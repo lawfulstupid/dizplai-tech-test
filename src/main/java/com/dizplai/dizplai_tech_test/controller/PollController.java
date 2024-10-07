@@ -139,7 +139,7 @@ public class PollController {
     }
 
     // Handles user response to a poll
-    @PostMapping("/{pollId}/respond/{optionId}")
+    @PutMapping("/{pollId}/respond/{optionId}")
     public @ResponseBody Poll respondToPoll(@PathVariable Integer pollId, @PathVariable Integer optionId, @CookieValue(CookieController.USER_ID_COOKIE) String userId) {
         // Find required objects
         final Poll poll = pollRepo.findById(pollId).orElseThrow(() -> new IllegalArgumentException("Poll not found"));
