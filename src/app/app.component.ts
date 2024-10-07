@@ -13,6 +13,7 @@ export class AppComponent {
   loading: boolean = true;
   poll?: Poll;
   submitDisabled = false;
+  message?: string;
 
   constructor(
       private cookieApi: CookieApiService,
@@ -34,6 +35,7 @@ export class AppComponent {
     this.submitDisabled = true;
     this.pollApi.submitPoll(this.poll.id, optionId).subscribe(updatedPoll => {
       this.poll = updatedPoll;
+      this.message = 'Thank you for your response!'
       this.submitDisabled = false;
     }, () => {
       this.submitDisabled = false; // re-enable button on error
