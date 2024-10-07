@@ -1,0 +1,46 @@
+.poll-option {
+  position: relative;
+  width: 95%;
+  margin: 2ch auto;
+  padding: 0.5ch;
+  border-radius: 1ch;
+  text-align: center;
+  color: floralwhite;
+  border: 2px solid darkmagenta;
+  background: transparentize(darkmagenta, 0.5);
+  overflow: hidden;
+  pointer-events: none;
+  &.selectable {
+    cursor: pointer;
+    pointer-events: all;
+  }
+  &.selected {
+    border-color: floralwhite;
+  }
+  span {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+.votes-bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: darkmagenta;
+}
+
+.votes-display {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  font-size: small;
+  color: floralwhite;
+  margin-right: 1ch;
+  display: flex;
+  span {
+    margin: auto;
+  }
+}

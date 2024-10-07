@@ -1,0 +1,26 @@
+.poll-container {
+  margin: 5% auto;
+  @media screen and (orientation: landscape) {
+    width: 40%;
+  }
+  @media screen and (orientation: portrait) {
+    width: 90%;
+  }
+}
+
+#submit-button {
+  width: 95%;
+  margin: 2ch auto;
+  padding: 0.5ch;
+  border-radius: 1ch;
+  text-align: center;
+  color: #222222;
+  border: 2px solid floralwhite;
+  background: floralwhite;
+  cursor: pointer;
+  &.disabled {
+    background: transparentize(floralwhite, 0.5);
+    pointer-events: none;
+    cursor: default;
+  }
+}

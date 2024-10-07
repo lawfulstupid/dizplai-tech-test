@@ -1,0 +1,9 @@
+<div class="poll-option" [class.selectable]="canSelect" [class.selected]="pollOption.userSelection" (click)="select()">
+  <span>{{pollOption.description}}</span>
+  <ng-container *ngIf="showVotes">
+    <div class="votes-bar" [style.width]="pollOption.votesPercentage + '%'"></div>
+    <div class="votes-display">
+      <span>{{pollOption.votesPercentage}}%</span>
+    </div>
+  </ng-container>
+</div>

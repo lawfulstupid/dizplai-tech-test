@@ -7,4 +7,5 @@ export interface Poll {
     options: Array<PollOption>;
     userComplete?: boolean;
     totalVotes?: number;
+    selectionMade?: boolean;
 }

@@ -1,0 +1,7 @@
+<h1 *ngIf="!poll">
+  No poll available, please check later
+</h1>
+<ng-container class="column" *ngIf="poll">
+  <h1>{{poll.question}}</h1>
+  <poll-option [pollOption]="option" [canSelect]="!poll.userComplete" [showVotes]="poll.totalVotes !== undefined" (onSelect)="onOptionSelect($event)" *ngFor="let option of poll.options"></poll-option>
+</ng-container>
