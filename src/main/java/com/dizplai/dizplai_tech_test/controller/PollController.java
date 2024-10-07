@@ -49,7 +49,7 @@ public class PollController {
     // Creates a new poll
     @Secured("ADMIN")
     @PostMapping
-    public @ResponseBody Poll createPoll(@RequestBody CreatePollRequestBody body, @RequestParam(name = "setactive", required = false, defaultValue = "false") boolean setActive) {
+    public @ResponseBody Poll createPoll(@RequestBody CreatePollRequestBody body, @RequestParam(name = "activate", required = false, defaultValue = "false") boolean activate) {
         // Validation
         if (body.name() == null || body.name().isEmpty()) {
             throw new IllegalArgumentException("Poll name cannot be empty");
@@ -73,7 +73,7 @@ public class PollController {
         });
 
         Poll savedPoll = pollRepo.save(poll);
-        return setActive ? setActivePoll(savedPoll.getId()) : savedPoll;
+        return activate ? setActivePoll(savedPoll.getId()) : savedPoll;
     }
 
     public record CreatePollRequestBody(
@@ -96,8 +96,8 @@ public class PollController {
     // Creates a sample poll
     @Secured("ADMIN")
     @PostMapping("/sample")
-    public @ResponseBody Poll createSamplePoll(@RequestParam(name = "setactive", required = false, defaultValue = "false") boolean setActive) {
-        return createPoll(getSamplePoll(), setActive);
+    public @ResponseBody Poll createSamplePoll(@RequestParam(name = "activate", required = false, defaultValue = "false") boolean activate) {
+        return createPoll(getSamplePoll(), activate);
     }
 
     // Marks the given poll as active
