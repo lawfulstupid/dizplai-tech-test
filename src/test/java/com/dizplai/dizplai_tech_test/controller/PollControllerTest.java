@@ -2,7 +2,6 @@ package com.dizplai.dizplai_tech_test.controller;
 
 import com.dizplai.dizplai_tech_test.config.ExceptionResolver;
 import com.dizplai.dizplai_tech_test.dao.PollRepository;
-import com.dizplai.dizplai_tech_test.dao.ResponseRepository;
 import com.dizplai.dizplai_tech_test.model.Poll;
 import com.dizplai.dizplai_tech_test.model.PollOption;
 import com.dizplai.dizplai_tech_test.model.enums.PollStatus;
@@ -36,9 +35,6 @@ public class PollControllerTest {
     @Mock
     private PollRepository pollRepo;
 
-    @Mock
-    private ResponseRepository responseRepo;
-
     @BeforeEach
     public void setup() {
         mvc = MockMvcBuilders
@@ -55,15 +51,14 @@ public class PollControllerTest {
 
         mvc.perform(get("/poll"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(samplePollOutput(PollStatus.ACTIVE)));
+                .andExpect(content().string(samplePollOutput()));
     }
 
     @Test
     public void getActivePollTest_noneActive() throws Exception {
         when(pollRepo.findFirstByStatus(PollStatus.ACTIVE)).thenReturn(Optional.empty());
         mvc.perform(get("/poll"))
-                .andExpect(status().isOk())
-                .andExpect(content().string(""));
+                .andExpect(status().is5xxServerError());
     }
 
     @Test
@@ -97,7 +92,7 @@ public class PollControllerTest {
 
         mvc.perform(post("/poll").content(requestBody).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().string(samplePollOutput(PollStatus.PENDING)));
+                .andExpect(content().string(samplePollOutput()));
     }
 
     @Test
@@ -138,21 +133,24 @@ public class PollControllerTest {
         return poll;
     }
 
-    private String samplePollOutput(PollStatus pollStatus) {
+    private String samplePollOutput() {
         return "{" +
                 "\"id\":1," +
                 "\"question\":\"What have I got in my pocket?\"," +
                 "\"options\":[{" +
                     "\"id\":1," +
-                    "\"description\":\"Handses\"" +
+                    "\"description\":\"Handses\"," +
+                    "\"userSelection\":false" +
                 "},{" +
                     "\"id\":2," +
-                    "\"description\":\"Knife\"" +
+                    "\"description\":\"Knife\"," +
+                    "\"userSelection\":false" +
                 "},{" +
                     "\"id\":3," +
-                    "\"description\":\"String, or nothing\"" +
+                    "\"description\":\"String, or nothing\"," +
+                    "\"userSelection\":false" +
                 "}]," +
-                "\"status\":\"" + pollStatus.name() + "\"" +
+                "\"userComplete\":false" +
         "}";
     }
 

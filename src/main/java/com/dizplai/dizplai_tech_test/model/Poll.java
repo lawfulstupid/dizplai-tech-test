@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.OffsetDateTime;
@@ -40,9 +40,8 @@ public class Poll {
     /* Conditional results serialisation logic */
 
     public void setCurrentUser(String userId) {
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        boolean isAdmin = securityContext.getAuthentication().getAuthorities()
-                .stream().anyMatch(auth -> auth.getAuthority().equals("ADMIN"));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAdmin = authentication != null && authentication.getAuthorities().stream().anyMatch(auth -> auth.getAuthority().equals("ADMIN"));
         if (userId == null && !isAdmin) return;
         options.forEach(option -> option.setCurrentUser(userId));
         userComplete = options.stream().anyMatch(PollOption::isUserSelection);
