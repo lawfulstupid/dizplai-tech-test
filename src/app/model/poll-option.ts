@@ -3,5 +3,5 @@ export interface PollOption {
     description: string;
     userSelection?: boolean;
     votes?: number;
-    votesPercentage?: number;
+    votesPercentage?: string;
 }

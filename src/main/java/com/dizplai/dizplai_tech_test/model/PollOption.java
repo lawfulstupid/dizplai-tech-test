@@ -45,8 +45,10 @@ public class PollOption {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("votesPercentage")
-    public Double getVotesPercentage() {
-        return poll.isShowResults() ? 100d * getVotes() / poll.getTotalVotes() : null;
+    public String getVotesPercentage() {
+        if (!poll.isShowResults()) return null;
+        double value = 100d * getVotes() / poll.getTotalVotes();
+        return String.format("%.0f%%", value);
     }
 
 }
