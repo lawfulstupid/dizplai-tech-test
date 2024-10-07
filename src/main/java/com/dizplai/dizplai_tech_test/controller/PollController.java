@@ -147,6 +147,11 @@ public class PollController {
         final Poll poll = pollRepo.findById(pollId).orElseThrow(() -> new IllegalArgumentException("Poll not found"));
         final PollOption option = poll.getOptions().stream().filter(opt -> opt.getId() == optionId).findFirst().orElseThrow(() -> new IllegalArgumentException("Option not found"));
 
+        // Validation
+        if (poll.getResponses().stream().anyMatch(response -> response.getUser().equals(userId))) {
+            throw new IllegalCallerException("User has already responded to poll");
+        }
+
         // Construct Response object
         Response response = new Response();
         response.setPoll(poll);
