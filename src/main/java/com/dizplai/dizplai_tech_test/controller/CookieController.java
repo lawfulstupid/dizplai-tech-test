@@ -24,7 +24,6 @@ public class CookieController {
         if (userId == null) {
             Cookie cookie = new Cookie(USER_ID_COOKIE, UUID.randomUUID().toString());
             cookie.setMaxAge(Integer.MAX_VALUE);
-            cookie.setSecure(true);
             response.addCookie(cookie);
         }
         return new ResponseEntity<>(HttpStatus.OK);
