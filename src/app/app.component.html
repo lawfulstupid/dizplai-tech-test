@@ -1,5 +1,7 @@
-<div class="poll-container" *ngIf="!loading && poll">
-  <poll [poll]="poll"></poll>
-  <div id="submit-button" [class.disabled]="!poll.selectionMade" (click)="submit()" *ngIf="!poll.userComplete">Submit</div>
+<div class="poll-container" *ngIf="!loading">
+  <ng-container *ngIf="poll">
+    <poll [poll]="poll"></poll>
+    <div id="submit-button" [class.disabled]="!poll.selectionMade" (click)="submit()" *ngIf="!poll.userComplete">Submit</div>
+  </ng-container>
   <h2 *ngIf="message">{{message}}</h2>
 </div>

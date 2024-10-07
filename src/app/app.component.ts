@@ -23,6 +23,10 @@ export class AppComponent {
       this.pollApi.getActivePoll().subscribe(poll => {
         this.poll = poll;
         this.loading = false;
+      }, err => {
+        console.error(err);
+        this.message = 'No polls available, please check later';
+        this.loading = false;
       });
     });
   }
