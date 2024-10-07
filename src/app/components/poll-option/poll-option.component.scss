@@ -49,15 +49,33 @@
   }
 }
 
-.votes-display {
+.votes-display-container {
   position: absolute;
   left: 100%;
   top: 0;
   height: 100%;
   font-size: small;
-  margin-left: 1ch;
-  display: flex;
-  span {
-    margin: auto;
+  width: 6ch; // sufficient to display "100%"
+  overflow: hidden;
+  z-index: -1;
+  .votes-display {
+    position: absolute;
+    animation: slide-right 1s ease-in-out;
+    top: 0;
+    height: 100%;
+    margin-left: 1ch;
+    display: flex;
+    span {
+      margin: auto;
+    }
+  }
+}
+
+@keyframes slide-right {
+  0% {
+    left: -10ch;
+  }
+  100% {
+    left: 0;
   }
 }
