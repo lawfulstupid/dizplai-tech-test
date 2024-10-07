@@ -102,10 +102,10 @@ public class PollController {
 
     // Marks the given poll as active
     @Secured("ADMIN")
-    @PutMapping("/activate/{id}")
-    public @ResponseBody Poll setActivePoll(@PathVariable Integer id) {
+    @PutMapping("/{pollId}/activate")
+    public @ResponseBody Poll setActivePoll(@PathVariable Integer pollId) {
         // Find the requested poll
-        return pollRepo.findById(id)
+        return pollRepo.findById(pollId)
                 // Activate it
                 .map(this::setActivePoll)
                 // If not found, return error
