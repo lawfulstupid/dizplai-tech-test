@@ -11,7 +11,7 @@
 	<groupId>com.dizplai</groupId>
 	<artifactId>dizplai-tech-test</artifactId>
 
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>Dizplai Tech Test</name>
 	<description>Demo project for Spring Boot</description>
 
