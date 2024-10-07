@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Slf4j
 @Controller
@@ -38,7 +39,7 @@ public class PollController {
     public @ResponseBody Poll getActivePoll(@CookieValue(name = CookieController.USER_ID_COOKIE, required = false) String userId) {
         return pollRepo.findFirstByStatus(PollStatus.ACTIVE)
                 .map(poll -> returnPoll(poll, userId))
-                .orElseThrow(() -> new IllegalStateException("No active polls"));
+                .orElseThrow(() -> new NoSuchElementException("No active polls"));
     }
 
     private Poll returnPoll(Poll poll, String userId) {
@@ -116,7 +117,7 @@ public class PollController {
                 // Activate it
                 .map(this::setActivePoll)
                 // If none found, return error
-                .orElseThrow(() -> new IllegalStateException("No pending polls"));
+                .orElseThrow(() -> new NoSuchElementException("No pending polls"));
     }
 
     private Poll setActivePoll(Poll nextActivePoll) {

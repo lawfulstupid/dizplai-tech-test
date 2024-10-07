@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import java.util.NoSuchElementException;
+
 @ControllerAdvice
 public class ExceptionResolver {
 
@@ -12,12 +14,12 @@ public class ExceptionResolver {
     @ExceptionHandler(value = IllegalArgumentException.class)
     public void handleIllegalArgument() {}
 
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler(value = IllegalCallerException.class)
     public void handleIllegalCaller() {}
 
-    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
-    @ExceptionHandler(value = IllegalStateException.class)
-    public void handleIllegalState() {}
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NoSuchElementException.class)
+    public void handleNotFound() {}
 
 }
