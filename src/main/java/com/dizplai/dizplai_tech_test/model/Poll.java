@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -40,18 +42,25 @@ public class Poll {
     /* Conditional results serialisation logic */
 
     public void setCurrentUser(String userId) {
-        if (userId == null) return;
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        boolean isAdmin = securityContext.getAuthentication().getAuthorities()
+                .stream().anyMatch(auth -> auth.getAuthority().equals("ADMIN"));
+        if (userId == null && !isAdmin) return;
         options.forEach(option -> option.setCurrentUser(userId));
         userComplete = options.stream().anyMatch(PollOption::isUserSelection);
+        showResults = userComplete || isAdmin;
     }
 
     // Used for deciding whether to serialise results
     private transient boolean userComplete = false;
 
+    @JsonIgnore
+    private transient boolean showResults = false;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("totalVotes")
     public Integer getTotalVotes() {
-        return userComplete ? responses.size() : null;
+        return isShowResults() ? responses.size() : null;
     }
 
 }

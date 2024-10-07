@@ -40,13 +40,13 @@ public class PollOption {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("votes")
     public Integer getVotes() {
-        return poll.isUserComplete() ? responses.size() : null;
+        return poll.isShowResults() ? responses.size() : null;
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("votesPercentage")
     public Double getVotesPercentage() {
-        return poll.isUserComplete() ? 100d * getVotes() / poll.getTotalVotes() : null;
+        return poll.isShowResults() ? 100d * getVotes() / poll.getTotalVotes() : null;
     }
 
 }

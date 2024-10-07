@@ -42,9 +42,7 @@ public class PollController {
     }
 
     private Poll returnPoll(Poll poll, String userId) {
-        if (userId != null) {
-            poll.setCurrentUser(userId);
-        }
+        poll.setCurrentUser(userId);
         return poll;
     }
 
