@@ -58,7 +58,7 @@ public class PollControllerTest {
     public void getActivePollTest_noneActive() throws Exception {
         when(pollRepo.findFirstByStatus(PollStatus.ACTIVE)).thenReturn(Optional.empty());
         mvc.perform(get("/poll"))
-                .andExpect(status().is5xxServerError());
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
