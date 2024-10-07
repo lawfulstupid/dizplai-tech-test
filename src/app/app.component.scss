@@ -20,7 +20,8 @@
   background: floralwhite;
   cursor: pointer;
   &.disabled {
-    background: transparentize(floralwhite, 0.5);
+    border-color: dimgrey;
+    background: dimgray;
     pointer-events: none;
     cursor: default;
   }
